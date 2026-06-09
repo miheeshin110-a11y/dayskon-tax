@@ -10,11 +10,8 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f1f5f9; color: #1e293b; min-height: 100vh; }
-select, input, button { font-family: inherit; }
-input[type=text], input[type=password] { border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px 10px; font-size: 12px; outline: none; width: 100%; }
-input[type=text]:focus, input[type=password]:focus { border-color: #3b82f6; }
-button { cursor: pointer; }
+body { font-family: 'Apple SD Gothic Neo','Malgun Gothic',sans-serif; background:#f1f5f9; color:#1e293b; }
+select,input,button { font-family:inherit; }
 </style>
 </head>
 <body>
@@ -24,15 +21,15 @@ const { useState, useRef, useEffect } = React;
 
 const BASE_ITEM_MAP   = {"(사)한국건강기능식품협회||Black seed oil": "원재료", "(사)한국건강기능식품협회||데이즈온파라다이스그레인버닝": "지급수수료", "(주) 아이디어키||대행수수료(메타/구글/리포트)": "영업이익", "(주) 아이디어키||온라인 광고비": "영업이익", "(주) 크리마||크리마 리뷰": "지급수수료", "(주)공영홈쇼핑||매출차감_적립금사용": "영업이익", "(주)공영홈쇼핑||수수료매출(과세)": "영업이익", "(주)공영홈쇼핑||카드무이자프로모션": "영업이익", "(주)기쁨과소원||01/31기준한달칼라사용매수3937 외 4건": "지급수수료", "(주)기쁨과소원||02/28기준한달칼라사용매수1972 외 4건": "지급수수료", "(주)기쁨과소원||03/31기준한달칼라사용매수4027 외 4건": "지급수수료", "(주)기쁨과소원||04/30기준한달칼라사용매수3873 외 4건": "지급수수료", "(주)기쁨과소원||전산소모품": "지급수수료", "(주)기획사이다||시장조사 수수료": "영업이익", "(주)기획사이다||파라다이스그레인 광고대행비": "영업이익", "(주)노바렉스||원데이올인원프리바이오틱스유산균": "원재료", "(주)노바렉스||프리바이오틱스FOS에프오에스트리플": "원재료", "(주)다우기술||사방넷 사용료": "지급수수료", "(주)다우기술||사용료": "지급수수료", "(주)더존비즈온||WEHAGO Single Pack": "지급수수료", "(주)드림디포문구유통||복사지A4 80g [박스/500매x5권] (더블에이)외": "소모품비", "(주)벨에스엠||CUSTOMS CLEARANCE FEE": "지급수수료", "(주)벨에스엠||HANDLING CHARGE": "지급수수료", "(주)비바리퍼블리카||202601 토스 결제 수수료(토스머니)": "영업이익", "(주)비바리퍼블리카||202602 토스 결제 수수료(토스머니)": "영업이익", "(주)비바리퍼블리카||202602 토스쇼핑 상품 판매 수수료(카드)": "영업이익", "(주)비바리퍼블리카||202603 토스 결제 수수료(토스머니)": "영업이익", "(주)비바리퍼블리카||202603 토스쇼핑 상품 판매 수수료(카드)": "영업이익", "(주)비바리퍼블리카||202604 토스 결제 수수료(토스머니)": "영업이익", "(주)비오팜||비어랩맥주효모비오틴플러스": "원재료", "(주)사람인||으뜸(외3건)": "지급수수료", "(주)신세계라이브쇼핑||01월 무이자할부수수료": "영업이익", "(주)신세계라이브쇼핑||01월 판매대행 수수료": "영업이익", "(주)신세계라이브쇼핑||02월 무이자할부수수료": "영업이익", "(주)신세계라이브쇼핑||02월 판매대행 수수료": "영업이익", "(주)신세계라이브쇼핑||03월 무이자할부수수료": "영업이익", "(주)신세계라이브쇼핑||03월 판매대행 수수료": "영업이익", "(주)신세계라이브쇼핑||04월 무이자할부수수료": "영업이익", "(주)신세계라이브쇼핑||04월 판매대행 수수료": "영업이익", "(주)신세계라이브쇼핑||202601월 무형정산": "영업이익", "(주)신세계라이브쇼핑||202602월 무형정산": "영업이익", "(주)신세계라이브쇼핑||202603월 무형정산": "영업이익", "(주)신세계라이브쇼핑||202604월 무형정산": "영업이익", "(주)씨제이이엔엠||[20260423]정액수수료매출 -데이즈온(주)": "영업이익", "(주)씨제이이엔엠||무이자할부무이자할부 프로모션 정산(2026.01)": "영업이익", "(주)씨제이이엔엠||무이자할부무이자할부 프로모션 정산(2026.02)": "영업이익", "(주)씨제이이엔엠||무이자할부무이자할부 프로모션 정산(2026.03)": "영업이익", "(주)씨제이이엔엠||무이자할부무이자할부 프로모션 정산(2026.04)": "영업이익", "(주)씨제이이엔엠||수수료 매출01월분_TV": "영업이익", "(주)씨제이이엔엠||수수료 매출01월분_인터넷": "영업이익", "(주)씨제이이엔엠||수수료 매출02월분_TV": "영업이익", "(주)씨제이이엔엠||수수료 매출02월분_인터넷": "영업이익", "(주)씨제이이엔엠||수수료 매출03월분_TV": "영업이익", "(주)씨제이이엔엠||수수료 매출03월분_인터넷": "영업이익", "(주)씨제이이엔엠||수수료 매출04월분_TV": "영업이익", "(주)씨제이이엔엠||수수료 매출04월분_인터넷": "영업이익", "(주)씨제이이엔엠||판촉물프로모션 정산(2026.03)": "영업이익", "(주)씨제이이엔엠||판촉물프로모션 정산(2026.04)": "영업이익", "(주)아마존카||10회차 대여료": "차량유지비", "(주)아마존카||11회차 대여료": "차량유지비", "(주)아마존카||12회차 대여료": "차량유지비", "(주)아마존카||9회차 대여료": "차량유지비", "(주)어디로||[AD-11353/LXDNQJFVLX]": "지급수수료", "(주)에스에스지닷컴||[SSG.COM]상품정보유지비": "영업이익", "(주)에스에스지닷컴||[SSG.COM]판매수수료": "영업이익", "(주)에이도스||어떤약사 진행건": "영업이익", "(주)엔에스쇼핑||특약수수료": "영업이익", "(주)엘엠||200ml White Cap": "원재료", "(주)우리홈쇼핑||수수료매출()": "영업이익", "(주)우리홈쇼핑||특약매출(광고비)": "영업이익", "(주)우리홈쇼핑||프로모션": "영업이익", "(주)유디아이디||3월 PayApp 서비스수수료": "영업이익", "(주)유디아이디||3월 기업 PayApp 결제대행수수료": "영업이익", "(주)유진오토라이프||차량관리비": "차량유지비", "(주)이카운트||2026년 01월 사용료": "지급수수료", "(주)이카운트||2026년 02월 사용료": "지급수수료", "(주)이카운트||2026년 03월 사용료": "지급수수료", "(주)이카운트||2026년 04월 사용료": "지급수수료", "(주)인성아이티||[LG전자] LG 그램 16Z90T-GP56ML": "소모품비", "(주)인성아이티||[LG전자] LG 그램 17Z90T-GP7CL": "소모품비", "(주)지에스리테일홈쇼핑||1/1_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||1/4_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||1월모바일라이브_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||1월오늘오픈,홈매장광고매출": "영업이익", "(주)지에스리테일홈쇼핑||1월편의점반품정산": "영업이익", "(주)지에스리테일홈쇼핑||2/15_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||2/25_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||2/27_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||2026년1월수수료매입": "영업이익", "(주)지에스리테일홈쇼핑||2026년2월수수료매입": "영업이익", "(주)지에스리테일홈쇼핑||2026년3월수수료매입": "영업이익", "(주)지에스리테일홈쇼핑||2026년4월수수료매입": "영업이익", "(주)지에스리테일홈쇼핑||2월모바일라이브_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||2월오늘오픈,홈매장광고매출": "영업이익", "(주)지에스리테일홈쇼핑||3/12단독탭매장_연합진행(데이즈온)": "영업이익", "(주)지에스리테일홈쇼핑||3/14_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||3/26단독탭매장_연합진행(데이즈온)": "영업이익", "(주)지에스리테일홈쇼핑||3/26유료플친_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||3/28_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||3/7_출첵_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||3월모바일라이브_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||3월오늘오픈,홈매장광고매출": "영업이익", "(주)지에스리테일홈쇼핑||4/19연합탭매장데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||4/21데이즈온출석체크": "영업이익", "(주)지에스리테일홈쇼핑||4/23데이즈온연합탭매장": "영업이익", "(주)지에스리테일홈쇼핑||4/30데이즈온출석체크": "영업이익", "(주)지에스리테일홈쇼핑||4/4데이즈온출석체크": "영업이익", "(주)지에스리테일홈쇼핑||4월기타할인": "영업이익", "(주)지에스리테일홈쇼핑||4월모바일라이브_데이즈온": "영업이익", "(주)지에스리테일홈쇼핑||4월오늘오픈,홈매장광고매출": "영업이익", "(주)지에스리테일홈쇼핑||단독탭매장_연합진행(대원제약)": "영업이익", "(주)지에스리테일홈쇼핑||단독탭매장_연합진행(데이즈온)": "영업이익", "(주)지에스리테일홈쇼핑||랭킹매장배너": "영업이익", "(주)지에스리테일홈쇼핑||특가최상단배너": "영업이익", "(주)충인과학||6-Paradol 10mg": "경상연구개발비", "(주)케이지모빌리언스||핸드폰결제 수수료대": "영업이익", "(주)케이지이니시스||전자지불 수수료 20260101 - 20260131": "영업이익", "(주)케이지이니시스||전자지불 수수료 20260201 - 20260228": "영업이익", "(주)케이지이니시스||전자지불 수수료 20260301 - 20260331": "영업이익", "(주)케이지이니시스||전자지불 수수료 20260401 - 20260430": "영업이익", "(주)케이지파이낸셜||핸드폰결제 수수료대": "영업이익", "(주)케이티알파||'26.01 위수탁판매": "영업이익", "(주)케이티알파||'26.01 커머스광고": "영업이익", "(주)케이티알파||26.02 위수탁판매": "영업이익", "(주)케이티알파||26.02 커머스광고": "영업이익", "(주)케이티알파||26.03 위수탁판매": "영업이익", "(주)케이티알파||26.03 커머스광고": "영업이익", "(주)케이티알파||26.04 위수탁판매": "영업이익", "(주)케이티알파||26.04 커머스광고": "영업이익", "(주)크리마||크리마 리뷰": "지급수수료", "(주)페르베레발효캠퍼스||그래인 오브 파라다이스의 지표성분 분석 확립 및 기초특성평가": "지급수수료", "(주)한미양행||데이즈온100%유기농올레샷": "원재료", "(주)한미양행||동판비 - 데이즈온100%유기농올레샷": "원재료", "(주)한미양행||동판비 - 데이즈온그린아세로라C": "원재료", "(주)한미양행||원데이알파시클로덱스트린(10열)": "원재료", "(주)핸들포유||운전 대행 서비스": "지급수수료", "(주)홈앤쇼핑||모바일 광고비": "영업이익", "(주)홈앤쇼핑||수수료 정산": "영업이익", "(주)홈앤쇼핑||프로모션-무이자할인": "영업이익", "AJ네트웍스(주)||통합렌탈료": "지급수수료", "CJGLS（국제）구로영업소||운송료": "운반비", "SK브로드밴드(주)||통신요금 UKEY-610509035609": "통신비", "㈜ 엔에스쇼핑||202604월 수수료매출": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(1월 스페셜)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(1월 일반)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(2월 스페셜)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(2월 일반)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(3월 스페셜)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(3월 일반)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(4월 스페셜)": "영업이익", "㈜ 엔에스쇼핑||쇼핑북광고비(4월 일반)": "영업이익", "㈜ 엔에스쇼핑||자동주문전화할인": "영업이익", "㈜ 엔에스쇼핑||특약수수료": "영업이익", "㈜엘지유플러스||2026년 01월 서비스 이용료 매출": "통신비", "㈜엘지유플러스||2026년 02월 서비스 이용료 매출": "통신비", "㈜엘지유플러스||2026년 03월 서비스 이용료 매출": "통신비", "㈜엘지유플러스||2026년 04월 서비스 이용료 매출": "통신비", "계현빌딩||임대료": "임대료", "구글코리아 유한회사||광고": "영업이익", "남영조명상사||LED T5 1200 20W 6.500K": "소모품비", "네슬레코리아 유한책임회사||커피": "소모품비", "네이버 주식회사||네이버 검색광고_네이버 성과형 디스플레이 광고": "영업이익", "네이버 주식회사||네이버 검색광고_쇼핑검색광고": "영업이익", "네이버 주식회사||네이버 성과형 디스플레이 광고": "영업이익", "네이버 주식회사||네이버 쇼핑검색광고": "영업이익", "네이버파이낸셜 주식회사||계약 수수료": "영업이익", "네이버파이낸셜 주식회사||네이버페이 수수료": "영업이익", "리（Lee）푸드아트||01/19 KT알파쇼핑 방송 진행비용": "영업이익", "리（Lee）푸드아트||12/04 SK스토아 방송 진행비용 재료비": "영업이익", "법무법인 테헤란||법무수수료(등기)": "지급수수료", "샌드부스터 주식회사||26년 1월 데이즈온 물류대행비": "물류비", "샌드부스터 주식회사||26년 2월 데이즈온 물류대행비": "물류비", "샌드부스터 주식회사||26년 3월 데이즈온 물류대행비": "물류비", "샌드부스터 주식회사||26년 4월 데이즈온 물류대행비": "물류비", "서이마케팅||블로그대행_20건": "영업이익", "세무법인 진명||1월 기장료": "지급수수료", "세무법인 진명||2월 기장료": "지급수수료", "세무법인 진명||3월 기장료": "지급수수료", "세무법인 진명||4월 기장료": "지급수수료", "세무법인 진명||법인결산조정수수료": "지급수수료", "씨에스쉐어링 주식회사||01월 수수료": "지급수수료", "씨에스쉐어링 주식회사||02월 수수료": "지급수수료", "씨에스쉐어링 주식회사||03월 수수료": "지급수수료", "씨에스쉐어링 주식회사||04월 수수료": "지급수수료", "씨제이대한통운㈜||택배서비스": "영업이익", "씨제이대한통운㈜||택배서비스-신세계쇼핑": "영업이익", "씨제이올리브영(주)||2026년 01월 PIS사용료": "영업이익", "씨제이올리브영(주)||2026년 01월 물류대행수수료": "영업이익", "씨제이올리브영(주)||2026년 01월 행사판촉비": "영업이익", "씨제이올리브영(주)||2026년 02월 PIS사용료": "영업이익", "씨제이올리브영(주)||2026년 02월 물류대행수수료": "영업이익", "씨제이올리브영(주)||2026년 02월 행사판촉비": "영업이익", "씨제이올리브영(주)||2026년 03월 PIS사용료": "영업이익", "씨제이올리브영(주)||2026년 03월 물류대행수수료": "영업이익", "씨제이올리브영(주)||2026년 03월 행사판촉비": "영업이익", "씨제이올리브영(주)||2026년 04월 PIS사용료": "영업이익", "씨제이올리브영(주)||2026년 04월 물류대행수수료": "영업이익", "씨제이올리브영(주)||2026년 04월 행사판촉비": "영업이익", "아론전기조명||조명설치": "지급수수료", "아미코젠주식회사||(1110100939)데이즈온 알파CD 탱글 젤리": "원재료", "아미코젠주식회사||(6110100339)동판대": "원재료", "알투오에이(OA)퍼니처||운송비용": "운반비", "에드앤터||2월 01일 / 2월 10일 TV조선다큐": "광고선전비", "에스케이렌터카 주식회사||차량 대여료 34하9965": "제외", "에스케이스토아주식회사||26년 01월1차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 01월1차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 01월2차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 01월2차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 01월3차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 01월3차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 02월1차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 02월1차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 02월2차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 02월2차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 02월3차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 02월3차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 03월1차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 03월1차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 03월2차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 03월2차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 03월3차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 03월3차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 04월1차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 04월1차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 04월2차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 04월2차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 04월3차분 무형수수료매출-혼합 매출_대금공제_BO105085_데이즈온(주)": "영업이익", "에스케이스토아주식회사||26년 04월3차분 위수탁매출_BO105085_데이즈온(주)": "영업이익", "에스케이인텔릭스(주)||24년형 원코크 얼음물 정수기 (옵틱화이트)": "지급수수료", "에스케이텔레콤(주)||이동통신요금(01041905449)": "통신비", "엔에이치엔케이씨피 주식회사||휴대폰본인확인서비스 초과이용수수료(12월분, AIPJT)": "지급수수료", "엔에이치엔페이코 주식회사||PAYCO PG매출_데이즈온(주)": "영업이익", "엔에이치엔페이코 주식회사||데이즈온 페이코 광고비(1월)": "영업이익", "엔에이치엔페이코 주식회사||데이즈온 페이코 광고비(2월)": "영업이익", "엔에이치엔페이코 주식회사||데이즈온 페이코 광고비(3월)": "영업이익", "엔에이치엔페이코 주식회사||데이즈온 페이코 광고비(4월)": "영업이익", "엘리트판촉||마이보틀 비쥬 스트랩 에코젠 300ml": "원가소모품비", "영 컴퍼니||폐기물처리": "지급수수료", "와디즈 주식회사||395852_[런칭얼리버드] 데이즈온 100% 유기농 올레샷 런칭 프로": "영업이익", "워크맨그룹 주식회사||컨설팅수수료": "지급수수료", "원팩(ONEPACK)||데이즈온 쇼핑백 외": "원가소모품비", "원프레임||데이즈온 파라다이스 그레인 버닝 영상제작": "광고선전비", "유진테크시스템||네트워크 점검건": "지급수수료", "유진테크시스템||통신선로작업건외": "지급수수료", "유한회사 모나드홀딩스||섭외비": "영업이익", "유한회사 모나드홀딩스||진행비": "영업이익", "유한회사 모나드홀딩스||판매수수료": "영업이익", "유한회사 콘텐츠마이닝||광고대행": "영업이익", "잇다||전기보수": "지급수수료", "제이씨렌탈||LG그램 렌탈": "지급수수료", "제이와이컴퍼니||3월 데이즈온 라이브커머스 제작 대행 비용": "영업이익", "주식회사 건강세상||오한진 초상권료": "광고선전비", "주식회사 건강세상||초상권료": "광고선전비", "주식회사 글로벌이앤비||*4월라이브커머스제작료": "영업이익", "주식회사 더블유쇼핑||01월 위탁판매수수료": "영업이익", "주식회사 더블유쇼핑||01월1차 방송광고비 [01/01,1회]": "영업이익", "주식회사 더블유쇼핑||01월1차 방송광고비 [01/04,1회]": "영업이익", "주식회사 더블유쇼핑||02월 위탁판매수수료": "영업이익", "주식회사 더블유쇼핑||02월1차 방송광고비 [02/07,1회]": "영업이익", "주식회사 더블유쇼핑||02월1차 방송광고비 [02/08,1회]": "영업이익", "주식회사 더블유쇼핑||02월2차 방송광고비 [02/16,1회]": "영업이익", "주식회사 더블유쇼핑||02월3차 방송광고비 [02/22,1회]": "영업이익", "주식회사 더블유쇼핑||03월 위탁판매수수료": "영업이익", "주식회사 더블유쇼핑||03월2차 방송광고비 [03/13,1회]": "영업이익", "주식회사 더블유쇼핑||04월 위탁판매수수료": "영업이익", "주식회사 더블유쇼핑||04월2차 방송광고비 [04/18,1회]": "영업이익", "주식회사 더블유쇼핑||04월2차 방송광고비 [04/19,1회]": "영업이익", "주식회사 더블유쇼핑||04월3차 방송광고비 [04/25,04/26,2회]": "영업이익", "주식회사 도너츠||전자결재": "지급수수료", "주식회사 두핸즈||품고 1월 물류대행비": "영업이익", "주식회사 두핸즈||품고 2월 물류대행비": "물류비", "주식회사 두핸즈||품고 3월 물류대행비": "영업이익", "주식회사 두핸즈||품고 4월 물류대행비": "물류비", "주식회사 디에프아시아(DFASIA Co.,Ltd.)||인플루언서 Seeding": "영업이익", "주식회사 디에프아시아(DFASIA Co.,Ltd.)||큐텐 월별 고정비": "영업이익", "주식회사 린인파트너스||인사(채용) 컨설팅": "지급수수료", "주식회사 비바리퍼블리카||토스쇼핑 광고": "영업이익", "주식회사 스토리앤미디어||온라인 마케팅": "영업이익", "주식회사 스피어코퍼레이션||플라즈마로겐 반품비용": "영업이익", "주식회사 어써머||라이브커머스 제작 3건 선금 50% (쇼호스트 섭외 비용 별도 청구)": "영업이익", "주식회사 엘엑스판토스||OTHER CHARGE": "지급수수료", "주식회사 엘엑스판토스||TERMINAL HANDLING CHARGE": "지급수수료", "주식회사 온빛아이앤씨||5층 싱크대 월 청소비": "지급수수료", "주식회사 온빛아이앤씨||싱크대 청소비": "지급수수료", "주식회사 온빛아이앤씨||싱크대청소": "지급수수료", "주식회사 와이에스인터내셔널||배송비": "운반비", "주식회사 유니포스트||[유니포스트] 경비처리 서비스 이용 대금(1년 선납)": "지급수수료", "주식회사 유림하이텍||운반비": "운반비", "주식회사 지음||홍보 컨설팅": "지급수수료", "주식회사 창||2월 대리운영수수료": "영업이익", "주식회사 창||3월대리운영수수료": "영업이익", "주식회사 카카오||202601_선물하기_구매확정": "영업이익", "주식회사 카카오||202601_카카오스토어_구매확정": "영업이익", "주식회사 카카오||202601_톡체크아웃_대행수수료매출": "영업이익", "주식회사 카카오||202602_선물하기_구매확정": "영업이익", "주식회사 카카오||202602_카카오스토어_구매확정": "영업이익", "주식회사 카카오||202602_톡체크아웃_대행수수료매출": "영업이익", "주식회사 카카오||202603_선물하기_구매확정": "영업이익", "주식회사 카카오||202603_카카오스토어_구매확정": "영업이익", "주식회사 카카오||202603_톡체크아웃_대행수수료매출": "영업이익", "주식회사 카카오||202604_선물하기_구매확정": "영업이익", "주식회사 카카오||202604_톡체크아웃_대행수수료매출": "영업이익", "주식회사 카카오||카카오모먼트": "영업이익", "주식회사 카카오페이||202601_카카오페이 온라인_수수료정산": "영업이익", "주식회사 카카오페이||202602_카카오페이 온라인_수수료정산": "영업이익", "주식회사 카카오페이||202603_카카오페이 온라인_수수료정산": "영업이익", "주식회사 카카오페이||202604_카카오페이 온라인_수수료정산": "영업이익", "주식회사 캘러스컴퍼니||소프트웨어 개발 용역": "지급수수료", "주식회사 케이티||인터넷 에센스 (z!64198060550)": "통신비", "주식회사 태건자산관리||1509호관리비외": "임차료", "주식회사 토리랩스||1/9 리뷰마케팅": "영업이익", "주식회사 티에스퍼니처（TS FURNITURE)||사무용가구-배송비": "운반비", "주식회사 팸글로벌||26.1월분 쇼피 운영 고정비": "영업이익", "주식회사 팸글로벌||26.2월분 쇼피 운영 고정비": "영업이익", "주식회사 팸글로벌||26.3월분 쇼피 운영 고정비": "지급수수료", "주식회사 팸글로벌||26.4월분 쇼피 운영 고정비": "영업이익", "주식회사 프로그레스미디어||애즈순 광고구매 - 토스 라이브 마켓 보기": "영업이익", "주식회사 프리윌트레이딩||상품조사 업무 컨설팅": "제외", "주식회사 하울커뮤니케이션||26.01.01 재방 이월": "광고선전비", "주식회사 하울커뮤니케이션||26.01.22 재방 이월": "광고선전비", "주식회사 현대홈쇼핑||01월 1주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||01월 2주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||01월 3주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||01월 상품하자반품(A/S)": "영업이익", "주식회사 현대홈쇼핑||02월 2주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||02월 3주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||03월 2주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||03월 3주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||04월 2주기 프로그램광고비": "영업이익", "주식회사 현대홈쇼핑||04월 3주기 프로그램광고비": "영업이익", "주식회사고캠||GO0121-01번 대여료": "지급수수료", "지스쿼드 코리아||싱가포르 SFA 상품분류 및 사전 리뷰 서비스": "지급수수료", "지스쿼드 코리아||싱가포르 식품 수입유통대행 계약 체결": "지급수수료", "창대 디자인 전기||조명시공": "지급수수료", "케이인더스트리||K-AV 160 card": "소모품비", "케이인더스트리||K-AV card 4.5.6": "소모품비", "케이제이코스||2월 정산": "지급수수료", "케이제이코스||3월정산": "영업이익", "코웨이(주)||BAS40-A/비데": "지급수수료", "쿠팡 주식회사||AWD/AWD_2601_DE/(2058087)_데이즈온(주)_Awards_2601": "영업이익", "쿠팡 주식회사||AWD/AWD_2602_DE/(2058087)_데이즈온(주)_Awards_2602": "영업이익", "쿠팡 주식회사||AWD/AWD_2603_DE/(2058087)_데이즈온(주)_Awards_2603": "영업이익", "쿠팡 주식회사||AWD/AWD_2604_DE/(2058087)_데이즈온(주)_Awards_2604": "영업이익", "쿠팡 주식회사||BI_3P_202602/BI_3P_202602": "영업이익", "쿠팡 주식회사||BI_3P_202603/BI_3P_202603": "영업이익", "쿠팡 주식회사||BI_3P_202604/BI_3P_202604": "영업이익", "쿠팡 주식회사||CoupangLive_3P/3P_데이즈온(주)_LIVE": "영업이익", "쿠팡 주식회사||ProductAD_3P/20260131_DE/3P_2601_SELF_SERVICE_데이즈온(주)": "영업이익", "쿠팡 주식회사||ProductAD_3P/20260228_DE/3P_2602_SELF_SERVICE_데이즈온(주)": "영업이익", "쿠팡 주식회사||ProductAD_3P/20260331_DE/3P_2603_SELF_SERVICE_데이즈온(주)": "영업이익", "쿠팡 주식회사||ProductAD_3P/20260430_DE/3P_2604_SELF_SERVICE_데이즈온(주)": "영업이익", "쿠팡 주식회사||RETAIL_Display AD/AD_2601_DE/(2100475)데이즈온(주)_AD_2026-1 데이즈온(주) 데이즈온_202601": "영업이익", "쿠팡 주식회사||RETAIL_Display AD/AD_2602_DE/(2142428)데이즈온(주)_AD_2026-2 데이즈온(주) 데이즈온_202602": "영업이익", "쿠팡 주식회사||RETAIL_Display AD/AD_2603_DE/(2183213)데이즈온(주)_AD_2026-3 데이즈온(주) 데이즈온_202603": "영업이익", "쿠팡 주식회사||판매수수료": "영업이익", "쿠팡 주식회사||프리미엄 데이터_202601/202601_프리미엄 데이터_데이즈온(주)": "영업이익", "쿠팡 주식회사||프리미엄 데이터_202602/202602_프리미엄 데이터_데이즈온(주)": "영업이익", "쿠팡 주식회사||프리미엄 데이터_202603/202603_프리미엄 데이터_데이즈온(주)": "영업이익", "쿠팡 주식회사||프리미엄 데이터_202604/202604_프리미엄 데이터_데이즈온(주)": "영업이익", "쿠팡로지스틱스서비스(유)||MilkRun_202601/202601_밀크런 운송매출_데이즈온(주)": "영업이익", "쿠팡로지스틱스서비스(유)||MilkRun_202602/202602_밀크런 운송매출_데이즈온(주)": "영업이익", "쿠팡로지스틱스서비스(유)||MilkRun_202603/202603_밀크런 운송매출_데이즈온(주)": "영업이익", "쿠팡로지스틱스서비스(유)||MilkRun_202604/202604_밀크런 운송매출_데이즈온(주)": "영업이익", "트랙스로지스코리아(주)||Smartship_국내배송운임": "물류비", "트랙스로지스코리아(주)||Smartship_창고비": "물류비", "트랙스로지스코리아(주)||Smartship_해외배송운임": "물류비", "트랙스로지스코리아(주)||스마트 배송(Smart Delivery)": "물류비", "특허법인 지담||디자인 2건 등록 비용 (30-2026-0000454,30-2026-0000455)": "지급수수료", "특허법인 지담||디자인 출원 비용 2건 (30-2026-0000454 외 1)": "지급수수료", "특허법인 지담||미국, 일본 및 말레이시아 (3 개국) 상표출원 (5류)": "지급수수료", "특허법인 지담||미국, 일본 및 말레이시아 (3 개국) 선행상표조사 (5 류)": "지급수수료", "티.씨.에스 컨설팅||Microsoft 365 Business Standard": "지급수수료", "티알엔||판매수수료": "영업이익", "페이업 주식회사||전자결제대행수수료_신용카드": "영업이익", "플로우크래프트||실행 구조 설계 프로젝트 용역 계약": "지급수수료", "한국미디어마케팅그룹 주식회사||언론보도": "영업이익", "한국미디어마케팅그룹 주식회사||조선비즈": "영업이익", "한국파렛트풀(주)||KPP파렛트": "지급수수료", "헬씨데이 주식회사||광고 운영 대행비": "제외", "휘경상사||면장발행대행수수료": "지급수수료", "（주）컴프리즈||데이즈온 봉함스티커": "원가", "（주）컴프리즈||블루베리 파우더 세트박스외": "원가"};
 const BASE_VENDOR_MAP = {"(주)지에스리테일홈쇼핑": "영업이익", "쿠팡 주식회사": "영업이익", "에스케이스토아주식회사": "영업이익", "씨제이올리브영(주)": "영업이익", "(주)씨제이이엔엠": "영업이익", "(주)홈앤쇼핑": "영업이익", "주식회사 카카오": "영업이익", "㈜엘지유플러스": "통신비", "(주)우리홈쇼핑": "영업이익", "㈜ 엔에스쇼핑": "영업이익", "주식회사 더블유쇼핑": "영업이익", "주식회사 현대홈쇼핑": "영업이익", "(주)신세계라이브쇼핑": "영업이익", "(주)기쁨과소원": "지급수수료", "(주)비바리퍼블리카": "영업이익", "(주)이카운트": "지급수수료", "(주)케이티알파": "영업이익", "네이버 주식회사": "영업이익", "네이버파이낸셜 주식회사": "영업이익", "엔에이치엔페이코 주식회사": "영업이익", "(주)공영홈쇼핑": "영업이익", "(주)한미양행": "원재료", "(주)에스에스지닷컴": "영업이익", "세무법인 진명": "지급수수료", "(주) 아이디어키": "영업이익", "(주)노바렉스": "원재료", "(주)다우기술": "지급수수료", "(주)비오팜": "원재료", "(주)아마존카": "차량유지비", "(주)유진오토라이프": "차량유지비", "(주)케이지이니시스": "영업이익", "AJ네트웍스(주)": "지급수수료", "SK브로드밴드(주)": "통신비", "계현빌딩": "임대료", "구글코리아 유한회사": "영업이익", "샌드부스터 주식회사": "물류비", "씨에스쉐어링 주식회사": "지급수수료", "씨제이대한통운㈜": "영업이익", "아미코젠주식회사": "원재료", "에스케이인텔릭스(주)": "지급수수료", "에스케이텔레콤(주)": "통신비", "유한회사 모나드홀딩스": "영업이익", "주식회사 도너츠": "지급수수료", "주식회사 비바리퍼블리카": "영업이익", "주식회사 온빛아이앤씨": "지급수수료", "주식회사 지음": "지급수수료", "주식회사 카카오페이": "영업이익", "주식회사 케이티": "통신비", "코웨이(주)": "지급수수료", "쿠팡로지스틱스서비스(유)": "영업이익", "트랙스로지스코리아(주)": "물류비", "특허법인 지담": "지급수수료", "티알엔": "영업이익", "한국미디어마케팅그룹 주식회사": "영업이익", "한국파렛트풀(주)": "지급수수료", "(주)케이지모빌리언스": "영업이익", "(주)크리마": "지급수수료", "아론전기조명": "지급수수료", "주식회사 건강세상": "광고선전비", "티.씨.에스 컨설팅": "지급수수료", "페이업 주식회사": "영업이익", "(주)기획사이다": "영업이익", "(주)드림디포문구유통": "소모품비", "(주)벨에스엠": "지급수수료", "(주)어디로": "지급수수료", "(주)유디아이디": "영업이익", "(주)인성아이티": "소모품비", "(주)핸들포유": "지급수수료", "네슬레코리아 유한책임회사": "소모품비", "리（Lee）푸드아트": "영업이익", "서이마케팅": "영업이익", "유진테크시스템": "지급수수료", "주식회사 디에프아시아(DFASIA Co.,Ltd.)": "영업이익", "주식회사 스토리앤미디어": "영업이익", "주식회사 엘엑스판토스": "지급수수료", "주식회사 창": "영업이익", "주식회사 캘러스컴퍼니": "지급수수료", "주식회사 하울커뮤니케이션": "광고선전비", "지스쿼드 코리아": "지급수수료", "케이인더스트리": "소모품비", "휘경상사": "지급수수료", "（주）컴프리즈": "원가", "에스케이렌터카 주식회사": "제외", "주식회사 두핸즈": "물류비", "주식회사 태건자산관리": "임차료", "주식회사 팸글로벌": "영업이익", "주식회사 프리윌트레이딩": "제외", "케이제이코스": "영업이익"};
-const APPS_SCRIPT_CODE = "const SHEET_RULES = \"매핑규칙\";\n\nfunction getMonthSheetName(monthLabel) {\n  if (monthLabel) return \"세금계산서_\" + monthLabel;\n  const now = new Date();\n  return \"세금계산서_\" + now.getFullYear() + \"_\" + String(now.getMonth()+1).padStart(2,\"0\");\n}\n\nfunction ensureDataSheet(ss, sheetName) {\n  let sheet = ss.getSheetByName(sheetName);\n  if (!sheet) {\n    sheet = ss.insertSheet(sheetName);\n    sheet.appendRow([\"업로드일시\",\"작성일자\",\"상호\",\"합계금액\",\"공급가액\",\"세액\",\"품목명\",\"계정과목\",\"매핑출처\"]);\n    sheet.getRange(1,1,1,9).setFontWeight(\"bold\").setBackground(\"#dbeafe\");\n    sheet.setFrozenRows(1);\n    sheet.setColumnWidth(1,140); sheet.setColumnWidth(2,100);\n    sheet.setColumnWidth(3,180); sheet.setColumnWidth(7,200);\n  }\n  return sheet;\n}\n\nfunction doGet(e) {\n  try {\n    const ss = SpreadsheetApp.getActiveSpreadsheet();\n    let ruleSheet = ss.getSheetByName(SHEET_RULES);\n    if (!ruleSheet) {\n      ruleSheet = ss.insertSheet(SHEET_RULES);\n      ruleSheet.appendRow([\"상호\",\"품목명\",\"계정과목\",\"등록일시\"]);\n      ruleSheet.getRange(1,1,1,4).setFontWeight(\"bold\").setBackground(\"#e0f2fe\");\n      ruleSheet.setFrozenRows(1);\n    }\n    const rules = [];\n    const last = ruleSheet.getLastRow();\n    if (last > 1) {\n      ruleSheet.getRange(2,1,last-1,3).getValues()\n        .forEach(r => { if (r[0]) rules.push({vendor:r[0], item:r[1]||\"\", account:r[2]}); });\n    }\n    return ContentService.createTextOutput(JSON.stringify({ok:true,rules})).setMimeType(ContentService.MimeType.JSON);\n  } catch(err) {\n    return ContentService.createTextOutput(JSON.stringify({ok:false,error:err.message})).setMimeType(ContentService.MimeType.JSON);\n  }\n}\n\nfunction doPost(e) {\n  try {\n    const payload = JSON.parse(e.postData.contents);\n    const ss  = SpreadsheetApp.getActiveSpreadsheet();\n    const now = new Date().toLocaleString(\"ko-KR\",{timeZone:\"Asia/Seoul\"});\n    if (payload.rows && payload.rows.length > 0) {\n      const sheet = ensureDataSheet(ss, getMonthSheetName(payload.monthLabel));\n      const existing = new Set();\n      const lastRow = sheet.getLastRow();\n      if (lastRow > 1) {\n        sheet.getRange(2,2,lastRow-1,3).getValues()\n          .forEach(r => existing.add(r[0]+\"||\"+r[1]+\"||\"+r[2]));\n      }\n      const toAdd = payload.rows\n        .filter(r => !existing.has(r.date+\"||\"+r.vendor+\"||\"+r.item))\n        .map(r => [now,r.date,r.vendor,Number(r.total)||0,Number(r.supply)||0,Number(r.tax)||0,r.item,r.account,r.source]);\n      if (toAdd.length > 0) sheet.getRange(sheet.getLastRow()+1,1,toAdd.length,9).setValues(toAdd);\n    }\n    if (payload.newRules && payload.newRules.length > 0) {\n      let rs = ss.getSheetByName(SHEET_RULES);\n      if (!rs) { rs = ss.insertSheet(SHEET_RULES); rs.appendRow([\"상호\",\"품목명\",\"계정과목\",\"등록일시\"]); rs.getRange(1,1,1,4).setFontWeight(\"bold\").setBackground(\"#e0f2fe\"); rs.setFrozenRows(1); }\n      const ex = new Set();\n      const last = rs.getLastRow();\n      if (last > 1) rs.getRange(2,1,last-1,2).getValues().forEach(r => ex.add(r[0]+\"||\"+(r[1]||\"\")));\n      const toAdd = payload.newRules.filter(r => !ex.has(r.vendor+\"||\"+(r.item||\"\"))).map(r => [r.vendor,r.item||\"\",r.account,now]);\n      if (toAdd.length > 0) rs.getRange(rs.getLastRow()+1,1,toAdd.length,4).setValues(toAdd);\n    }\n    return ContentService.createTextOutput(JSON.stringify({ok:true,inserted:payload.rows?.length||0})).setMimeType(ContentService.MimeType.JSON);\n  } catch(err) {\n    return ContentService.createTextOutput(JSON.stringify({ok:false,error:err.message})).setMimeType(ContentService.MimeType.JSON);\n  }\n}";
+const APPS_SCRIPT_CODE = "const SHEET_RULES = \"매핑규칙\";\n\nfunction getMonthSheetName(monthLabel) {\n  if (monthLabel) return \"세금계산서_\" + monthLabel;\n  const now = new Date();\n  return \"세금계산서_\" + now.getFullYear() + \"_\" + String(now.getMonth()+1).padStart(2,\"0\");\n}\n\nfunction ensureDataSheet(ss, sheetName) {\n  let sheet = ss.getSheetByName(sheetName);\n  if (!sheet) {\n    sheet = ss.insertSheet(sheetName);\n    sheet.appendRow([\"업로드일시\",\"작성일자\",\"상호\",\"합계금액\",\"공급가액\",\"세액\",\"품목명\",\"계정과목\",\"매핑출처\"]);\n    sheet.getRange(1,1,1,9).setFontWeight(\"bold\").setBackground(\"#dbeafe\");\n    sheet.setFrozenRows(1);\n    sheet.setColumnWidth(1,140); sheet.setColumnWidth(2,100);\n    sheet.setColumnWidth(3,180); sheet.setColumnWidth(7,200);\n  }\n  return sheet;\n}\n\nfunction addCorsHeaders(output) {\n  return output\n    .setHeader(\"Access-Control-Allow-Origin\", \"*\")\n    .setHeader(\"Access-Control-Allow-Methods\", \"GET, POST, OPTIONS\")\n    .setHeader(\"Access-Control-Allow-Headers\", \"Content-Type\");\n}\n\nfunction doGet(e) {\n  try {\n    const ss = SpreadsheetApp.getActiveSpreadsheet();\n    let ruleSheet = ss.getSheetByName(SHEET_RULES);\n    if (!ruleSheet) {\n      ruleSheet = ss.insertSheet(SHEET_RULES);\n      ruleSheet.appendRow([\"상호\",\"품목명\",\"계정과목\",\"등록일시\"]);\n      ruleSheet.getRange(1,1,1,4).setFontWeight(\"bold\").setBackground(\"#e0f2fe\");\n      ruleSheet.setFrozenRows(1);\n    }\n    const rules = [];\n    const last = ruleSheet.getLastRow();\n    if (last > 1) {\n      ruleSheet.getRange(2,1,last-1,3).getValues()\n        .forEach(r => { if (r[0]) rules.push({vendor:r[0], item:r[1]||\"\", account:r[2]}); });\n    }\n    return addCorsHeaders(\n      ContentService.createTextOutput(JSON.stringify({ok:true, rules}))\n        .setMimeType(ContentService.MimeType.JSON)\n    );\n  } catch(err) {\n    return addCorsHeaders(\n      ContentService.createTextOutput(JSON.stringify({ok:false, error:err.message}))\n        .setMimeType(ContentService.MimeType.JSON)\n    );\n  }\n}\n\nfunction doPost(e) {\n  try {\n    const payload = JSON.parse(e.postData.contents);\n    const ss  = SpreadsheetApp.getActiveSpreadsheet();\n    const now = new Date().toLocaleString(\"ko-KR\",{timeZone:\"Asia/Seoul\"});\n\n    if (payload.rows && payload.rows.length > 0) {\n      const sheet = ensureDataSheet(ss, getMonthSheetName(payload.monthLabel));\n      const existing = new Set();\n      const lastRow = sheet.getLastRow();\n      if (lastRow > 1) {\n        sheet.getRange(2,2,lastRow-1,3).getValues()\n          .forEach(r => existing.add(r[0]+\"||\"+r[1]+\"||\"+r[2]));\n      }\n      const toAdd = payload.rows\n        .filter(r => !existing.has(r.date+\"||\"+r.vendor+\"||\"+r.item))\n        .map(r => [now,r.date,r.vendor,Number(r.total)||0,Number(r.supply)||0,Number(r.tax)||0,r.item,r.account,r.source]);\n      if (toAdd.length > 0) sheet.getRange(sheet.getLastRow()+1,1,toAdd.length,9).setValues(toAdd);\n    }\n\n    if (payload.newRules && payload.newRules.length > 0) {\n      let rs = ss.getSheetByName(SHEET_RULES);\n      if (!rs) {\n        rs = ss.insertSheet(SHEET_RULES);\n        rs.appendRow([\"상호\",\"품목명\",\"계정과목\",\"등록일시\"]);\n        rs.getRange(1,1,1,4).setFontWeight(\"bold\").setBackground(\"#e0f2fe\");\n        rs.setFrozenRows(1);\n      }\n      const ex = new Set();\n      const last = rs.getLastRow();\n      if (last > 1) rs.getRange(2,1,last-1,2).getValues().forEach(r => ex.add(r[0]+\"||\"+(r[1]||\"\")));\n      const toAdd = payload.newRules\n        .filter(r => !ex.has(r.vendor+\"||\"+(r.item||\"\")))\n        .map(r => [r.vendor, r.item||\"\", r.account, now]);\n      if (toAdd.length > 0) rs.getRange(rs.getLastRow()+1,1,toAdd.length,4).setValues(toAdd);\n    }\n\n    return addCorsHeaders(\n      ContentService.createTextOutput(JSON.stringify({ok:true, inserted:payload.rows?.length||0}))\n        .setMimeType(ContentService.MimeType.JSON)\n    );\n  } catch(err) {\n    return addCorsHeaders(\n      ContentService.createTextOutput(JSON.stringify({ok:false, error:err.message}))\n        .setMimeType(ContentService.MimeType.JSON)\n    );\n  }\n}";
 
 const NON_PANGWANBI = new Set(["영업이익","원재료","원가","원가소모품비","제외"]);
 const ALL_ACCOUNTS  = ["경상연구개발비","광고선전비","물류비","보정예정","소모품비","영업이익","운반비","원가","원가소모품비","원재료","임대료","임차료","제외","지급수수료","차량유지비","통신비"];
 
 function xlDate(v) {
-  if (!v && v !== 0) return "";
+  if (!v && v!==0) return "";
   if (v instanceof Date) return v.toISOString().slice(0,10);
-  if (typeof v === "number") return new Date((v-25569)*86400000).toISOString().slice(0,10);
+  if (typeof v==="number") return new Date((v-25569)*86400000).toISOString().slice(0,10);
   return String(v).slice(0,10);
 }
 function fmtNum(n) { return n||n===0 ? Number(n).toLocaleString("ko-KR") : ""; }
@@ -63,24 +60,48 @@ function parseFile(raw, sheetRules) {
     const orig=isHometax?"":String(r[6]||"").trim();
     if (!vendor&&!item) return null;
     let mapped;
-    if (orig&&orig!=="보정예정") { const m=autoMap(vendor,item,sheetRules); mapped=m.account!=="보정예정"?m:{account:orig,source:"exact"}; }
+    if (orig&&orig!=="보정예정"){const m=autoMap(vendor,item,sheetRules);mapped=m.account!=="보정예정"?m:{account:orig,source:"exact"};}
     else mapped=autoMap(vendor,item,sheetRules);
-    return {id:i,date:xlDate(r[0]),vendor,item,total:isHometax?r[14]:r[2],supply:isHometax?r[15]:r[3],tax:isHometax?r[16]:r[4],account:mapped.account,source:mapped.source};
+    return {id:i,date:xlDate(r[0]),vendor,item,total:isHometax?r[14]:r[2],supply:isHometax?r[15]:r[3],tax:isHometax?r[16]:r[4],account:mapped.account,source:mapped.source,saved:false};
   }).filter(Boolean);
 }
 
-const BADGE = {
-  sheet:  {label:"시트규칙",  bg:"#fdf4ff",color:"#7e22ce"},
-  exact:  {label:"상호+품목", bg:"#dcfce7",color:"#166534"},
-  vendor: {label:"상호",      bg:"#dbeafe",color:"#1e40af"},
-  new:    {label:"⚠ 보정필요",bg:"#fef3c7",color:"#92400e"},
-  manual: {label:"수동",       bg:"#f3e8ff",color:"#6b21a8"},
+const BADGE={
+  sheet: {label:"시트규칙",bg:"#fdf4ff",color:"#7e22ce"},
+  exact: {label:"상호+품목",bg:"#dcfce7",color:"#166534"},
+  vendor:{label:"상호",bg:"#dbeafe",color:"#1e40af"},
+  new:   {label:"⚠ 보정필요",bg:"#fef3c7",color:"#92400e"},
+  manual:{label:"수동",bg:"#f3e8ff",color:"#6b21a8"},
 };
 
+// CORS 우회: no-cors 모드 사용 불가 → fetch + redirect:follow 로 처리
 async function sendToScript(url, payload) {
-  const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),redirect:"follow"});
-  const text=await res.text();
-  try { return JSON.parse(text); } catch { return {ok:false,error:"응답 오류: "+text.slice(0,120)}; }
+  try {
+    const res = await fetch(url, {
+      method:"POST",
+      mode:"cors",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload),
+      redirect:"follow"
+    });
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch { return {ok:false, error:"응답 파싱 오류"}; }
+  } catch(err) {
+    // CORS 실패 시 no-cors로 재시도 (응답 못 읽지만 데이터는 전송됨)
+    try {
+      await fetch(url, {
+        method:"POST",
+        mode:"no-cors",
+        headers:{"Content-Type":"text/plain"},
+        body:JSON.stringify(payload),
+        redirect:"follow"
+      });
+      return {ok:true, inserted:"(확인불가 — 시트에서 직접 확인)", nocors:true};
+    } catch(e2) {
+      return {ok:false, error:e2.message};
+    }
+  }
 }
 
 function App() {
@@ -96,7 +117,6 @@ function App() {
   const [copied,setCopied]=useState(false);
   const [sheetRules,setSheetRules]=useState([]);
   const [rulesStatus,setRulesStatus]=useState(null);
-  const [saveRuleIds,setSaveRuleIds]=useState(new Set());
   const fileRef=useRef();
 
   useEffect(()=>{try{if(scriptUrl)localStorage.setItem("das_url",scriptUrl);}catch{}},[scriptUrl]);
@@ -105,7 +125,7 @@ function App() {
     if (!scriptUrl.startsWith("https://script.google.com")){alert("Apps Script URL을 먼저 입력하세요.");return;}
     setRulesStatus("loading");
     try {
-      const res=await fetch(scriptUrl,{redirect:"follow"});
+      const res=await fetch(scriptUrl,{mode:"cors",redirect:"follow"});
       const data=await res.json();
       if(data.ok){setSheetRules(data.rules||[]);setRulesStatus("ok");}
       else setRulesStatus("error");
@@ -122,7 +142,7 @@ function App() {
       if(!parsed){alert("헤더(작성일자)를 찾을 수 없습니다.");return;}
       let monthLabel=extractMonthLabel(file.name);
       if(!monthLabel&&parsed.length>0&&parsed[0].date){const d=parsed[0].date;monthLabel=d.slice(0,4)+"_"+d.slice(5,7);}
-      setRows(parsed);setSaveRuleIds(new Set());
+      setRows(parsed);
       setMeta({file:file.name,sheet:target,monthLabel,sheetName:"세금계산서_"+(monthLabel||"미확인"),total:parsed.length,
         exact:parsed.filter(r=>r.source==="exact"||r.source==="sheet").length,
         vendor:parsed.filter(r=>r.source==="vendor").length,
@@ -132,23 +152,33 @@ function App() {
     reader.readAsArrayBuffer(file);
   }
 
-  function handleChange(account,id){setRows(prev=>prev.map(r=>r.id===id?{...r,account,source:"manual"}:r));}
-  function toggleSaveRule(id){setSaveRuleIds(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});}
+  function handleChange(account,id){
+    setRows(prev=>prev.map(r=>r.id===id?{...r,account,source:"manual",saved:false}:r));
+  }
+
+  // 규칙저장 버튼 토글 (보정필요/수동 항목에서 계정과목 확정 후)
+  function toggleSave(id){
+    setRows(prev=>prev.map(r=>r.id===id?{...r,saved:!r.saved}:r));
+  }
 
   async function handleSync() {
-    if(!scriptUrl.startsWith("https://script.google.com")){alert("Apps Script URL을 입력하세요.");return;}
+    if (!scriptUrl.startsWith("https://script.google.com")){alert("Apps Script URL을 입력하세요.");return;}
     setSyncStatus("loading");setSyncMsg("");
-    const newRules=rows.filter(r=>saveRuleIds.has(r.id)&&r.account!=="보정예정").map(r=>({vendor:r.vendor,item:r.item,account:r.account}));
-    const payload={monthLabel:meta?.monthLabel||null,newRules,
-      rows:rows.map(r=>({date:r.date,vendor:r.vendor,total:r.total,supply:r.supply,tax:r.tax,item:r.item,account:r.account,source:BADGE[r.source]?.label||"수동"}))};
-    try {
-      const result=await sendToScript(scriptUrl,payload);
-      if(result.ok){
-        setSyncStatus("ok");
-        setSyncMsg("✅ "+result.inserted+"행 → ["+meta?.sheetName+"]"+(newRules.length>0?" · 규칙 "+newRules.length+"건 저장":""));
-        if(newRules.length>0){setSheetRules(prev=>[...prev,...newRules]);setSaveRuleIds(new Set());}
-      } else {setSyncStatus("error");setSyncMsg("❌ "+result.error);}
-    } catch(err){setSyncStatus("error");setSyncMsg("❌ "+err.message);}
+    const newRules=rows.filter(r=>r.saved&&r.account!=="보정예정").map(r=>({vendor:r.vendor,item:r.item,account:r.account}));
+    const payload={
+      monthLabel:meta?.monthLabel||null,
+      newRules,
+      rows:rows.map(r=>({date:r.date,vendor:r.vendor,total:r.total,supply:r.supply,tax:r.tax,item:r.item,account:r.account,source:BADGE[r.source]?.label||"수동"})),
+    };
+    const result=await sendToScript(scriptUrl,payload);
+    if(result.ok){
+      setSyncStatus("ok");
+      const ruleMsg=newRules.length>0?` · 규칙 ${newRules.length}건 저장`:"";
+      setSyncMsg(`✅ ${result.inserted}행 → [${meta?.sheetName}]${ruleMsg}${result.nocors?" (시트에서 확인)":""}`);
+      if(newRules.length>0){setSheetRules(prev=>[...prev,...newRules]);setRows(prev=>prev.map(r=>({...r,saved:false})));}
+    } else {
+      setSyncStatus("error");setSyncMsg("❌ "+result.error);
+    }
   }
 
   function exportExcel(){
@@ -173,6 +203,7 @@ function App() {
   const displayed=rows.filter(r=>filter==="pending"?r.account==="보정예정":filter==="pangwanbi"?!NON_PANGWANBI.has(r.account)&&r.account!=="보정예정":true);
   const pendingCount=rows.filter(r=>r.account==="보정예정").length;
   const pangwanbiCount=rows.filter(r=>!NON_PANGWANBI.has(r.account)&&r.account!=="보정예정").length;
+  const savedCount=rows.filter(r=>r.saved).length;
 
   const th={padding:"7px 8px",fontWeight:700,color:"#475569",fontSize:11,background:"#f8fafc",borderBottom:"2px solid #e2e8f0",whiteSpace:"nowrap",textAlign:"left"};
   const td={padding:"5px 8px",borderBottom:"1px solid #f1f5f9"};
@@ -190,6 +221,7 @@ function App() {
 
       <div style={{padding:"14px 20px",maxWidth:1100,margin:"0 auto"}}>
 
+        {/* URL 입력 */}
         <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:10,padding:"10px 14px",marginBottom:12,display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
           <span style={{fontSize:12,fontWeight:700,color:"#475569",whiteSpace:"nowrap"}}>📊 시트 URL</span>
           <input type="text" value={scriptUrl} onChange={e=>setScriptUrl(e.target.value)}
@@ -206,6 +238,7 @@ function App() {
           </button>
         </div>
 
+        {/* 설정 안내 */}
         {showGuide && (
           <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:10,padding:"14px",marginBottom:12,fontSize:12,lineHeight:1.9,color:"#334155"}}>
             <b>⚙ Apps Script 최초 설정 (1회)</b>
@@ -217,8 +250,8 @@ function App() {
               <li>유형: <b>웹 앱</b> / 실행: <b>나</b> / 액세스: <b>모든 사용자</b> → 배포</li>
               <li>나오는 <b>웹앱 URL</b> 위 입력란에 붙여넣기 → <b>🔄 규칙 불러오기</b></li>
             </ol>
-            <div style={{marginTop:10,display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontWeight:700}}>Apps Script 코드</span>
+            <div style={{marginTop:10,display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+              <span style={{fontWeight:700}}>Apps Script 코드 (CORS 수정본)</span>
               <button onClick={copyScript}
                 style={{background:copied?"#dcfce7":"#3b82f6",border:"none",borderRadius:6,padding:"6px 16px",fontSize:12,cursor:"pointer",fontWeight:700,color:copied?"#166534":"#fff"}}>
                 {copied?"✅ 복사됨!":"📋 코드 복사"}
@@ -236,6 +269,7 @@ function App() {
           </div>
         )}
 
+        {/* 드롭존 */}
         <div onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)}
           onDrop={e=>{e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f)processFile(f);}}
           onClick={()=>fileRef.current.click()}
@@ -272,14 +306,14 @@ function App() {
 
             {pendingCount>0 && (
               <div style={{background:"#fffbeb",border:"1px solid #fcd34d",borderRadius:8,padding:"9px 14px",marginBottom:10,fontSize:12,color:"#92400e"}}>
-                💡 보정필요 항목에서 계정과목 선택 후 <b>☑ 규칙저장</b> 체크 → 📤 업데이트 시 <b>다음 달부터 자동 반영</b>
+                💡 보정필요 항목에서 계정과목 선택 후 <b>규칙저장</b> 버튼 클릭 → 📤 업데이트 시 <b>다음 달부터 자동 반영</b>
               </div>
             )}
 
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:8}}>
               <div style={{fontSize:12,color:"#64748b",display:"flex",alignItems:"center",gap:8}}>
                 <span>📄 {meta.file}</span>
-                {saveRuleIds.size>0 && <span style={{background:"#fdf4ff",color:"#7e22ce",borderRadius:5,padding:"2px 8px",fontWeight:600}}>규칙 {saveRuleIds.size}건 저장 예정</span>}
+                {savedCount>0 && <span style={{background:"#fdf4ff",color:"#7e22ce",borderRadius:5,padding:"2px 10px",fontWeight:600,fontSize:12}}>규칙 {savedCount}건 저장 예정</span>}
               </div>
               <div style={{display:"flex",gap:6}}>
                 <button style={{...btn("#fff","#475569",{border:"1px solid #e2e8f0"})}} onClick={()=>{setRows([]);setMeta(null);setFilter("all");setSyncStatus(null);}}>다시 업로드</button>
@@ -293,6 +327,7 @@ function App() {
           </div>
         )}
 
+        {/* 테이블 */}
         {displayed.length>0 && (
           <div style={{background:"#fff",borderRadius:8,border:"1px solid #e2e8f0",overflowX:"auto"}}>
             <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:700}}>
@@ -303,8 +338,8 @@ function App() {
                   <th style={{...th,width:100,textAlign:"right"}}>합계금액</th>
                   <th style={{...th,minWidth:140}}>품목명</th>
                   <th style={{...th,width:120}}>계정과목</th>
-                  <th style={{...th,width:70}}>출처</th>
-                  <th style={{...th,width:58,textAlign:"center"}}>규칙저장</th>
+                  <th style={{...th,width:68}}>출처</th>
+                  <th style={{...th,width:80,textAlign:"center"}}>규칙저장</th>
                 </tr>
               </thead>
               <tbody>
@@ -328,7 +363,14 @@ function App() {
                         <span style={{background:badge.bg,color:badge.color,borderRadius:4,padding:"2px 6px",fontSize:10,fontWeight:600,whiteSpace:"nowrap"}}>{badge.label}</span>
                       </td>
                       <td style={{...td,textAlign:"center",padding:"3px 8px"}}>
-                        {canSave && <input type="checkbox" checked={saveRuleIds.has(r.id)} onChange={()=>toggleSaveRule(r.id)} style={{cursor:"pointer",accentColor:"#7e22ce",width:14,height:14}}/>}
+                        {canSave && (
+                          <button onClick={()=>toggleSave(r.id)}
+                            style={{border:"none",borderRadius:5,padding:"3px 8px",fontSize:11,cursor:"pointer",fontWeight:600,
+                              background:r.saved?"#7e22ce":"#f3e8ff",
+                              color:r.saved?"#fff":"#7e22ce"}}>
+                            {r.saved?"✓ 저장됨":"규칙저장"}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -342,8 +384,7 @@ function App() {
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App/>);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
